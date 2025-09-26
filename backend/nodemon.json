@@ -1,0 +1,8 @@
+{
+  "exec": "node",
+  "ext": "js,json",
+  "ignore": ["node_modules/", "src/database/database.sqlite"],
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

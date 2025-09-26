@@ -1,7 +1,10 @@
+import { createRequire } from 'module';
+import knexConfig from '../../knexfile.js';
+
+const require = createRequire(import.meta.url);
 const knex = require('knex');
-const knexConfig = require('../../knexfile');
 
 const environment = process.env.NODE_ENV || 'development';
 const config = knexConfig[environment];
 
-module.exports = knex(config);
+export default knex(config);

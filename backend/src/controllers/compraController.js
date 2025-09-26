@@ -1,7 +1,7 @@
-const axios = require('axios');
-const knex = require('../database/connection');
-const Compra = require('../models/Compra');
-const Item = require('../models/Item');
+import axios from 'axios';
+import knex from '../database/connection.js';
+import Compra from '../models/Compra.js';
+import Item from '../models/Item.js';
 
 class CompraController {
   static async create(req, res) {
@@ -77,4 +77,4 @@ class CompraController {
   }
 }
 
-module.exports = CompraController;
+export default CompraController;

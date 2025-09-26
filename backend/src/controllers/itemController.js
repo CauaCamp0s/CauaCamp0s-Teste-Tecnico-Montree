@@ -1,4 +1,4 @@
-const Item = require('../models/Item');
+import Item from '../models/Item.js';
 
 class ItemController {
   static async create(req, res) {
@@ -46,4 +46,4 @@ class ItemController {
   }
 }
 
-module.exports = ItemController;
+export default ItemController;

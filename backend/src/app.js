@@ -1,8 +1,10 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const compraRoutes = require('./routes/compraRoutes');
-const itemRoutes = require('./routes/itemRoutes');
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import compraRoutes from './routes/compraRoutes.js';
+import itemRoutes from './routes/itemRoutes.js';
+
+dotenv.config();
 
 const app = express();
 
@@ -34,4 +36,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-module.exports = app;
+export default app;

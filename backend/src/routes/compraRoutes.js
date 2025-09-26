@@ -1,9 +1,9 @@
-const express = require('express');
-const CompraController = require('../controllers/compraController');
+import express from 'express';
+import CompraController from '../controllers/compraController.js';
 
 const router = express.Router();
 
 router.post('/', CompraController.create);
 router.get('/', CompraController.list);
 
-module.exports = router;
+export default router;

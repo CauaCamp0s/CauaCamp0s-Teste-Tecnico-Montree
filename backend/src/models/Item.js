@@ -1,4 +1,4 @@
-const knex = require('../database/connection');
+import knex from '../database/connection.js';
 
 class Item {
   static async create(data) {
@@ -29,4 +29,4 @@ class Item {
   }
 }
 
-module.exports = Item;
+export default Item;
