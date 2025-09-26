@@ -1,6 +1,7 @@
 const axios = require('axios');
 const knex = require('../database/connection');
 const Compra = require('../models/Compra');
+const Item = require('../models/Item');
 
 class CompraController {
   static async create(req, res) {
@@ -9,33 +10,34 @@ class CompraController {
 
       if (!item_id) {
         return res.status(400).json({
-          error: 'Campo obrigatório: item_id'
+          error: 'Por favor, informe o item_id do produto que deseja comprar.'
         });
       }
 
-      const item = await knex('itens').where('id', item_id).first();
+      const item = await Item.findById(item_id);
       if (!item) {
         return res.status(404).json({
-          error: 'Item não encontrado'
+          error: 'Item não encontrado. Verifique se o ID está correto.'
         });
       }
 
-      if (item.qtd_atual <= 0) {
+      if (!await Item.hasStock(item_id)) {
         return res.status(400).json({
-          error: 'Item sem estoque disponível'
+          error: 'Este item está sem estoque disponível.'
         });
       }
 
       let comprador_github_login;
       try {
-        const githubResponse = await axios.get('https://api.github.com/users');
+        const githubUrl = 'https://api.github.com/users';
+        const githubResponse = await axios.get(githubUrl);
         const users = githubResponse.data;
         const randomUser = users[Math.floor(Math.random() * users.length)];
         comprador_github_login = randomUser.login;
       } catch (githubError) {
         console.error('Erro ao acessar API do GitHub:', githubError);
         return res.status(500).json({
-          error: 'Erro ao acessar API do GitHub'
+          error: 'Erro ao conectar com o GitHub. Tente novamente mais tarde.'
         });
       }
 
@@ -44,25 +46,33 @@ class CompraController {
         item_id
       });
 
-      await knex('itens')
-        .where('id', item_id)
-        .update({ qtd_atual: item.qtd_atual - 1 });
+      await Item.updateStock(item_id, item.qtd_atual - 1);
 
       const compraCompleta = await Compra.findById(compra.id);
-      res.status(201).json(compraCompleta);
+      res.status(201).json({
+        message: 'Compra realizada com sucesso',
+        compra: compraCompleta
+      });
     } catch (error) {
       console.error('Erro ao criar compra:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      res.status(500).json({ 
+        error: 'Erro interno ao processar a compra. Tente novamente mais tarde.' 
+      });
     }
   }
 
   static async list(req, res) {
     try {
       const compras = await Compra.findAll();
-      res.json(compras);
+      res.json({
+        message: compras.length > 0 ? `Encontradas ${compras.length} compra(s)` : 'Nenhuma compra realizada',
+        compras
+      });
     } catch (error) {
       console.error('Erro ao listar compras:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      res.status(500).json({ 
+        error: 'Erro interno ao buscar as compras. Tente novamente mais tarde.' 
+      });
     }
   }
 }
