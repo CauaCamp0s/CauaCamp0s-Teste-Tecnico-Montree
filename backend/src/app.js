@@ -1,10 +1,15 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const compraRoutes = require('./routes/compraRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 
 const app = express();
 
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://frontend:5173'],
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/compras', compraRoutes);
